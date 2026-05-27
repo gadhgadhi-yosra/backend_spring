@@ -1,0 +1,78 @@
+server:
+  port: 8080
+
+spring:
+  profiles:
+    default: dev
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 20MB
+  datasource:
+    url: jdbc:postgresql://localhost:5432/elfaddoui_db
+    username: elfaddoui_user
+    password: password123
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+  mail:
+    host: ${MAIL_HOST:smtp.gmail.com}
+    port: ${MAIL_PORT:587}
+    username: ${MAIL_USERNAME:gadhgadhiyosra2@gmail.com}
+    password: ${MAIL_PASSWORD:}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+          connectiontimeout: 5000
+          timeout: 5000
+          writetimeout: 5000
+
+app:
+  jwt:
+    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_123456789_CHANGE_ME"
+    expiration-minutes: 120
+  payment:
+    # URL opened by the mobile app for payment/checkout.
+    # In dev: defaults to the backend mock page (/pay).
+    # In prod: override via env var to the publicly reachable checkout domain.
+    checkout-base-url: ${APP_PAYMENT_CHECKOUT_BASE_URL:http://127.0.0.1:${server.port}/pay}
+  home:
+    defaults:
+      location-label: "Tunis, Centre Ville"
+      eta-label: "Livraison en 35 min"
+  uploads:
+    directory: "./uploads"
+    public-base-url: "/uploads"
+  admin:
+    full-name: ${APP_ADMIN_FULL_NAME:Store Admin}
+    email: ${APP_ADMIN_EMAIL:}
+    password: ${APP_ADMIN_PASSWORD:}
+  mail:
+    enabled: ${APP_MAIL_ENABLED:true}
+    from: ${APP_MAIL_FROM:gadhgadhiyosra2@gmail.com}
+    otp-subject: ${APP_MAIL_OTP_SUBJECT:Votre code OTP de reinitialisation}
+
+loyalty:
+  insight:
+    high-balance-threshold: 2000
+
+ai:
+  provider: openai
+  embedding-provider: ${AI_EMBEDDING_PROVIDER:${ai.provider}}
+  chat-model: gpt-4.1-mini
+  embedding-model: text-embedding-3-small
+  api-key: ${OPENAI_API_KEY:}
+  embedding-api-key: ${AI_EMBEDDING_API_KEY:${OPENAI_API_KEY:}}
+  timeout-ms: 15000
+
+rag:
+  top-k: 8
+  rerank-k: 4
+
+recipes:
+  spoonacular:
+    api-key: ${SPOONACULAR_API_KEY:}

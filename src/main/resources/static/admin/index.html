@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maison Elfaddoui | Admin</title>
+    <link rel="icon" type="image/svg+xml" href='data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="%23ffffff"/><path d="M18 18h28v8H18z" fill="%23c46d2d"/><path d="M14 25h36v9H14z" fill="%23f1c29e"/><path d="M18 34h28v16H18z" fill="%2324493d"/><path d="M29 39h6v11h-6z" fill="%23f8f6f0"/></svg>'>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="page-shell">
+    <section id="loginView" class="login-view">
+        <div class="login-card">
+            <div class="logo-lockup logo-lockup-login">
+                <div class="logo-mark" aria-hidden="true">
+                    <div class="logo-shop">
+                        <span class="logo-shop-roof"></span>
+                        <span class="logo-shop-awning"></span>
+                        <span class="logo-shop-body"></span>
+                        <span class="logo-shop-door"></span>
+                    </div>
+                </div>
+                <div class="logo-copy">
+                    <p class="eyebrow">MAISON ELFADDOUI</p>
+                    <h1>Administration magasin</h1>
+                    <p class="lede">Acces reserve a la gestion du catalogue, des commandes et des informations du magasin.</p>
+                </div>
+            </div>
+
+            <form id="loginForm" class="stack">
+                <label>
+                    <span>Email admin</span>
+                    <input id="loginEmail" name="email" type="email" autocomplete="username" required>
+                </label>
+                <label>
+                    <span>Mot de passe</span>
+                    <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+                </label>
+                <button type="submit" class="primary">Se connecter</button>
+            </form>
+
+            <div class="hint-box">
+                <strong>Acces initial</strong>
+                <p>Definissez `APP_ADMIN_EMAIL`, `APP_ADMIN_PASSWORD` et relancez le backend.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="appView" class="app-view hidden">
+        <aside class="sidebar">
+            <div class="brand-block">
+                <div class="logo-lockup logo-lockup-side">
+                    <div class="logo-mark logo-mark-small" aria-hidden="true">
+                        <div class="logo-shop">
+                            <span class="logo-shop-roof"></span>
+                            <span class="logo-shop-awning"></span>
+                            <span class="logo-shop-body"></span>
+                            <span class="logo-shop-door"></span>
+                        </div>
+                    </div>
+                    <div class="logo-copy">
+                        <p class="eyebrow">MAISON ELFADDOUI</p>
+                        <h1>Gestion magasin</h1>
+                    </div>
+                </div>
+                <p class="muted">Suivi des commandes, des clients et du catalogue depuis un seul espace.</p>
+            </div>
+
+            <nav class="side-nav" aria-label="Navigation admin">
+                <button type="button" class="nav-link active" data-section="overviewSection">Vue generale</button>
+                <button type="button" class="nav-link" data-section="ordersSection">Commandes</button>
+                <button type="button" class="nav-link" data-section="customersSection">Clients</button>
+                <button type="button" class="nav-link" data-section="loyaltySection">Fidelite</button>
+                <button type="button" class="nav-link" data-section="deliverySection">Livraison</button>
+                <button type="button" class="nav-link" data-section="homeSection">Home app</button>
+                <button type="button" class="nav-link" data-section="categoriesSection">Categories</button>
+                <button type="button" class="nav-link" data-section="productsSection">Produits</button>
+            </nav>
+
+            <div class="side-card">
+                <strong>Repere</strong>
+                <p>Commencez par les categories, puis ajoutez les produits en leur associant une categorie active.</p>
+            </div>
+
+            <div class="side-card">
+                <strong>Compte connecte</strong>
+                <p id="adminIdentity" class="muted"></p>
+            </div>
+        </aside>
+
+        <main class="workspace">
+            <header class="workspace-topbar">
+                <div>
+                    <p class="eyebrow">TABLEAU DE BORD</p>
+                    <h2>Vue generale du magasin</h2>
+                    <p class="muted">Retrouvez ici les informations principales pour gerer les operations quotidiennes.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button id="refreshAllBtn" type="button" class="ghost">Actualiser</button>
+                    <button id="logoutBtn" type="button" class="danger">Deconnexion</button>
+                </div>
+            </header>
+
+            <section id="overviewSection" class="content-section">
+                <div class="hero-panel">
+                    <div>
+                        <p class="eyebrow">VUE D'ENSEMBLE</p>
+                        <h3>Le magasin en un seul regard</h3>
+                        <p class="muted">Les chiffres essentiels et l'etat du catalogue restent visibles des l'ouverture.</p>
+                    </div>
+                    <div class="hero-badges">
+                        <span class="hero-chip">Catalogue</span>
+                        <span class="hero-chip">Commandes</span>
+                        <span class="hero-chip">Clients</span>
+                    </div>
+                </div>
+
+                <section class="stats-grid">
+                    <article class="stat-card">
+                        <span>Categories</span>
+                        <strong id="categoryCount">0</strong>
+                        <small id="activeCategoryCount">0 actives</small>
+                    </article>
+                    <article class="stat-card">
+                        <span>Produits</span>
+                        <strong id="productCount">0</strong>
+                        <small id="activeProductCount">0 actifs</small>
+                    </article>
+                    <article class="stat-card">
+                        <span>Stock total</span>
+                        <strong id="stockCount">0</strong>
+                        <small id="promoProductCount">0 en promo</small>
+                    </article>
+                    <article class="stat-card">
+                        <span>Commandes</span>
+                        <strong id="orderCount">0</strong>
+                        <small id="pendingOrderCount">0 en attente</small>
+                    </article>
+                    <article class="stat-card">
+                        <span>Clients</span>
+                        <strong id="customerCount">0</strong>
+                        <small id="todayRevenue">0.00 TND aujourd'hui</small>
+                    </article>
+                    <article class="stat-card">
+                        <span>Chiffre d'affaires</span>
+                        <strong id="revenueTotal">0.00 TND</strong>
+                        <small id="lowStockCount">0 stock faible</small>
+                    </article>
+                </section>
+
+                <section class="overview-grid">
+                    <article class="guide-card">
+                        <p class="eyebrow">ETAPE 1</p>
+                        <h3>Organiser les categories</h3>
+                        <p class="muted">Creez des categories claires avec un nom affiche, un ordre et une image si necessaire.</p>
+                        <button type="button" class="ghost jump-btn" data-section-target="categoriesSection">Ouvrir categories</button>
+                    </article>
+                    <article class="guide-card">
+                        <p class="eyebrow">ETAPE 2</p>
+                        <h3>Ajouter les produits</h3>
+                        <p class="muted">Saisissez le prix, le stock, la description et la categorie pour garder une fiche produit complete.</p>
+                        <button type="button" class="ghost jump-btn" data-section-target="productsSection">Ouvrir produits</button>
+                    </article>
+                    <article class="guide-card">
+                        <p class="eyebrow">ETAPE 3</p>
+                        <h3>Suivre les commandes</h3>
+                        <p class="muted">Consultez les details, changez le statut et ajustez le livreur depuis un seul ecran.</p>
+                        <button type="button" class="ghost jump-btn" data-section-target="ordersSection">Ouvrir commandes</button>
+                    </article>
+                    <article class="guide-card">
+                        <p class="eyebrow">ETAPE 4</p>
+                        <h3>Regler la livraison</h3>
+                        <p class="muted">Mettez a jour le nom du livreur, les telephones et les frais utilises au checkout.</p>
+                        <button type="button" class="ghost jump-btn" data-section-target="deliverySection">Ouvrir livraison</button>
+                    </article>
+                </section>
+            </section>
+
+            <section id="ordersSection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">COMMANDES</p>
+                        <h3>Suivi des commandes</h3>
+                        <p class="muted">Consultez chaque commande, ajustez le statut et corrigez le livreur si necessaire.</p>
+                    </div>
+                    <button id="refreshOrdersBtn" type="button" class="ghost">Actualiser commandes</button>
+                </div>
+
+                <div class="admin-split">
+                    <article class="panel listing-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">LISTE</p>
+                                <h4>Commandes recentes</h4>
+                            </div>
+                        </div>
+                        <div id="orderList" class="list-grid"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">DETAIL</p>
+                                <h4>Commande selectionnee</h4>
+                            </div>
+                        </div>
+                        <div id="orderDetail" class="detail-card muted">Choisissez une commande pour afficher les informations.</div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="customersSection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">CLIENTS</p>
+                        <h3>Base clients</h3>
+                        <p class="muted">Visualisez les profils, les contacts et leur historique d'achat.</p>
+                    </div>
+                    <button id="refreshCustomersBtn" type="button" class="ghost">Actualiser clients</button>
+                </div>
+
+                <div class="admin-split">
+                    <article class="panel listing-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">LISTE</p>
+                                <h4>Clients inscrits</h4>
+                            </div>
+                        </div>
+                        <div id="customerList" class="list-grid"></div>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">FICHE</p>
+                                <h4>Client selectionne</h4>
+                            </div>
+                        </div>
+                        <div id="customerDetail" class="detail-card muted">Choisissez un client pour afficher sa fiche.</div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="loyaltySection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">FIDELITE</p>
+                        <h3>Points, cadeaux et bons clients</h3>
+                        <p class="muted">Selectionnez un client pour alimenter sa carte, puis creez les cadeaux globaux visibles dans l'app.</p>
+                    </div>
+                    <button id="refreshLoyaltyBtn" type="button" class="ghost">Actualiser fidelite</button>
+                </div>
+
+                <div class="admin-triple">
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">CLIENT</p>
+                                <h4>Recherche + compte</h4>
+                            </div>
+                        </div>
+
+                        <div class="stack">
+                            <label>
+                                <span>Recherche client</span>
+                                <input id="loyaltyCustomerQuery" type="text" placeholder="Nom ou email">
+                            </label>
+                            <input id="loyaltyCustomerId" type="hidden" value="">
+                            <div id="loyaltyCustomerResults" class="list-grid"></div>
+                            <div id="loyaltyAccountPreview" class="detail-card muted">Recherchez puis selectionnez un client.</div>
+                        </div>
+                    </article>
+
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">POINTS</p>
+                                <h4>Ajustement</h4>
+                            </div>
+                        </div>
+
+                        <form id="loyaltyPointsForm" class="stack">
+                            <label>
+                                <span>Motif</span>
+                                <input id="loyaltyPointsTitle" type="text" placeholder="Achat magasin" required>
+                            </label>
+                            <label>
+                                <span>Points (+/-)</span>
+                                <input id="loyaltyPointsValue" type="number" placeholder="45 ou -300" required>
+                            </label>
+                            <button type="submit" class="primary">Enregistrer points</button>
+                        </form>
+                    </article>
+
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">CADEAUX</p>
+                                <h4>Gifts + voucher</h4>
+                            </div>
+                        </div>
+
+                        <form id="loyaltyVoucherForm" class="stack">
+                            <h5>Voucher client</h5>
+                            <label>
+                                <span>Titre bon</span>
+                                <input id="loyaltyVoucherTitle" type="text" placeholder="-15% sur Boissons" required>
+                            </label>
+                            <label>
+                                <span>Code</span>
+                                <input id="loyaltyVoucherCode" type="text" placeholder="DRINK15" required>
+                            </label>
+                            <label>
+                                <span>Description</span>
+                                <input id="loyaltyVoucherDescription" type="text" placeholder="Valable sur boissons">
+                            </label>
+                            <label>
+                                <span>Expire le</span>
+                                <input id="loyaltyVoucherExpiresAt" type="datetime-local" required>
+                            </label>
+                            <button type="submit" class="primary">Creer voucher</button>
+                        </form>
+
+                        <form id="loyaltyGiftForm" class="stack">
+                            <h5>Cadeau global</h5>
+                            <input id="loyaltyGiftId" type="hidden" value="">
+                            <label>
+                                <span>Titre cadeau</span>
+                                <input id="loyaltyGiftTitle" type="text" placeholder="Cafe gratuit" required>
+                            </label>
+                            <label>
+                                <span>Points requis</span>
+                                <input id="loyaltyGiftPoints" type="number" min="1" placeholder="800" required>
+                            </label>
+                            <label>
+                                <span>Ordre</span>
+                                <input id="loyaltyGiftSortOrder" type="number" min="0" value="0">
+                            </label>
+                            <label class="checkbox">
+                                <input id="loyaltyGiftActive" type="checkbox" checked>
+                                <span>Cadeau actif</span>
+                            </label>
+                            <button id="loyaltyGiftSubmitBtn" type="submit" class="primary">Ajouter cadeau</button>
+                            <button id="loyaltyGiftCancelEditBtn" type="button" class="ghost hidden">Annuler modification</button>
+                        </form>
+
+                        <div id="loyaltyGiftList" class="list-grid"></div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="deliverySection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">LIVRAISON</p>
+                        <h3>Reglages livraison</h3>
+                        <p class="muted">Ces valeurs alimentent le checkout, le tracking et l'affichage front.</p>
+                    </div>
+                </div>
+
+                <div class="admin-split delivery-layout">
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">REGLAGE</p>
+                                <h4>Coordonnees livreur et magasin</h4>
+                            </div>
+                        </div>
+                        <form id="deliverySettingsForm" class="stack">
+                            <label>
+                                <span>Nom livreur par defaut</span>
+                                <input id="deliveryCourierName" type="text" required>
+                            </label>
+                            <label>
+                                <span>Telephone livreur</span>
+                                <input id="deliveryCourierPhone" type="text" placeholder="+216 55 123 456" required>
+                            </label>
+                            <label>
+                                <span>Telephone magasin</span>
+                                <input id="deliveryStorePhone" type="text" placeholder="+216 71 000 111" required>
+                            </label>
+                            <label>
+                                <span>Frais livraison</span>
+                                <input id="deliveryFee" type="number" min="0" step="0.01" required>
+                            </label>
+                            <label>
+                                <span>Label ETA par defaut</span>
+                                <input id="deliveryEtaLabel" type="text" placeholder="45-60 min" required>
+                            </label>
+                            <button type="submit" class="primary">Enregistrer livraison</button>
+                        </form>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">RESUME</p>
+                                <h4>Valeurs actives</h4>
+                            </div>
+                        </div>
+                        <div id="deliveryPreview" class="detail-card muted">Les parametres livraison apparaitront ici.</div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="homeSection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">HOME APP</p>
+                        <h3>Accueil mobile dynamique</h3>
+                        <p class="muted">Ces valeurs alimentent `/api/home`: localisation, delai, zones livrables, nos rayons et promotions.</p>
+                    </div>
+                    <button id="refreshHomeSettingsBtn" type="button" class="ghost">Actualiser home</button>
+                </div>
+
+                <div class="admin-split delivery-layout">
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">REGLAGES</p>
+                                <h4>Localisation et zones</h4>
+                            </div>
+                        </div>
+                        <form id="homeSettingsForm" class="stack">
+                            <label>
+                                <span>Localisation affichee</span>
+                                <input id="homeLocationLabel" type="text" placeholder="Tunis, Centre Ville" required>
+                                <small>Exemple: Ghardimaoui, Weghech ou Kalaa.</small>
+                            </label>
+                            <label>
+                                <span>Delai livraison affiche</span>
+                                <input id="homeEtaLabel" type="text" placeholder="Livraison 45-60 min" required>
+                            </label>
+                            <label>
+                                <span>Zones livrables</span>
+                                <input id="homeDeliveryAreas" type="text" placeholder="Ghardimaoui, Weghech, Kalaa">
+                                <small>Separe les zones par des virgules.</small>
+                            </label>
+                            <button type="submit" class="primary">Enregistrer home</button>
+                        </form>
+                    </article>
+
+                    <article class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">COMMENT CA MARCHE</p>
+                                <h4>Contenu dynamique</h4>
+                            </div>
+                        </div>
+                        <div id="homeSettingsPreview" class="detail-card muted">Les reglages Home apparaitront ici.</div>
+                    </article>
+                </div>
+
+                <article class="panel guide-card">
+                    <p class="eyebrow">OFFRES ET CATALOGUES</p>
+                    <h3>Gestion depuis admin</h3>
+                    <p class="muted">Les rayons viennent des categories actives. Les blocs "Promotions" et "Bons plans" viennent des produits en promo dont la date est active.</p>
+                    <button type="button" class="ghost jump-btn" data-section-target="productsSection">Configurer les offres produits</button>
+                </article>
+            </section>
+
+            <section id="categoriesSection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">CATEGORIES</p>
+                        <h3>Gestion des rayons</h3>
+                        <p class="muted">Formulaire en haut, liste juste en dessous sur toute la largeur pour mieux parcourir les categories.</p>
+                    </div>
+                    <button id="resetCategoryFormBtn" type="button" class="ghost">Nouvelle categorie</button>
+                </div>
+
+                <div class="categories-stack">
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">EDITION</p>
+                                <h4>Creer ou modifier une categorie</h4>
+                            </div>
+                        </div>
+
+                        <form id="categoryForm" class="stack">
+                            <input id="categoryId" type="hidden">
+                            <label>
+                                <span>Nom interne</span>
+                                <input id="categoryName" type="text" required>
+                                <small>Nom technique utilise dans la gestion.</small>
+                            </label>
+                            <label>
+                                <span>Cle URL</span>
+                                <input id="categoryKey" type="text" placeholder="fruits-et-legumes">
+                                <small>Version courte et lisible pour l'URL.</small>
+                            </label>
+                            <label>
+                                <span>Nom affiche</span>
+                                <input id="categoryDisplayName" type="text" placeholder="Fruits & Legumes">
+                                <small>Nom visible pour l'utilisateur final.</small>
+                            </label>
+                            <label>
+                                <span>Ordre d'affichage</span>
+                                <input id="categorySortOrder" type="number" min="0" value="0">
+                                <small>Plus le nombre est petit, plus la categorie apparait en haut.</small>
+                            </label>
+                            <label>
+                                <span>Image URL</span>
+                                <input id="categoryImageUrl" type="text" placeholder="https://... ou /uploads/...">
+                            </label>
+                            <div class="upload-row">
+                                <input id="categoryImageFile" type="file" accept="image/*">
+                                <button id="uploadCategoryImageBtn" type="button" class="ghost">Uploader image</button>
+                            </div>
+                            <div id="categoryImagePreview" class="image-preview muted">Apercu image categorie</div>
+
+                            <div class="flag-panel category-flag-panel">
+                                <div class="flag-panel-head">
+                                    <p class="eyebrow">FILTRES CATEGORIE</p>
+                                    <h5>Cette zone concerne seulement la categorie</h5>
+                                    <p class="muted">Les cases cochees ici n'activent rien automatiquement sur les produits.</p>
+                                </div>
+                                <label>
+                                    <span>Tags personnalises categorie</span>
+                                    <input id="categoryCustomTags" type="text" placeholder="ex: local, saison, premium">
+                                    <small>Separe les tags par des virgules. Tu peux ajouter ce que tu veux.</small>
+                                </label>
+                                <div class="flag-grid">
+                                    <label class="checkbox">
+                                        <input id="categoryPromo" type="checkbox">
+                                        <span>Afficher comme promo</span>
+                                    </label>
+                                    <label class="checkbox">
+                                        <input id="categoryBio" type="checkbox">
+                                        <span>Afficher comme bio</span>
+                                    </label>
+                                    <label class="checkbox">
+                                        <input id="categoryNew" type="checkbox">
+                                        <span>Afficher comme nouveau</span>
+                                    </label>
+                                    <label class="checkbox">
+                                        <input id="categoryPopular" type="checkbox">
+                                        <span>Afficher comme populaire</span>
+                                    </label>
+                                </div>
+                                <label class="checkbox flag-main-toggle">
+                                    <input id="categoryActive" type="checkbox" checked>
+                                    <span>Categorie active</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="primary">Enregistrer categorie</button>
+                        </form>
+                    </article>
+
+                    <article class="panel listing-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">LISTE</p>
+                                <h4>Categories disponibles</h4>
+                            </div>
+                        </div>
+                        <div id="categoryList" class="list-grid"></div>
+                    </article>
+                </div>
+            </section>
+
+            <section id="productsSection" class="content-section hidden">
+                <div class="section-heading">
+                    <div>
+                        <p class="eyebrow">PRODUITS</p>
+                        <h3>Catalogue et stock</h3>
+                        <p class="muted">Les champs sont regroupes par logique: identification, prix, stock, categorie et image.</p>
+                    </div>
+                    <button id="resetProductFormBtn" type="button" class="ghost">Nouveau produit</button>
+                </div>
+
+                <div class="toolbar panel toolbar-panel">
+                    <div class="toolbar-group">
+                        <input id="productSearch" type="search" placeholder="Chercher un produit" aria-label="Chercher un produit">
+                        <select id="productCategoryFilter" aria-label="Filtrer par categorie">
+                            <option value="">Toutes les categories</option>
+                        </select>
+                        <select id="productActiveFilter" aria-label="Filtrer par statut actif">
+                            <option value="">Tous statuts</option>
+                            <option value="true">Actifs</option>
+                            <option value="false">Inactifs</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-group">
+                        <select id="productPromoFilter" aria-label="Filtrer par promotion">
+                            <option value="">Promo ou non</option>
+                            <option value="true">En promo</option>
+                        </select>
+                        <select id="productBioFilter" aria-label="Filtrer par bio">
+                            <option value="">Bio ou non</option>
+                            <option value="true">Bio</option>
+                        </select>
+                        <select id="productNewFilter" aria-label="Filtrer par nouveaute">
+                            <option value="">Nouveaute</option>
+                            <option value="true">Nouveau</option>
+                        </select>
+                        <select id="productPopularFilter" aria-label="Filtrer par popularite">
+                            <option value="">Popularite</option>
+                            <option value="true">Populaire</option>
+                        </select>
+                    </div>
+                    <div class="toolbar-group">
+                        <input id="productMinDiscountFilter" type="number" min="0" max="100" placeholder="Remise min %" aria-label="Remise minimale en pourcentage">
+                        <input id="productMaxDiscountFilter" type="number" min="0" max="100" placeholder="Remise max %" aria-label="Remise maximale en pourcentage">
+                        <button id="filterProductsBtn" type="button" class="ghost">Filtrer</button>
+                        <button id="resetProductFiltersBtn" type="button" class="ghost">Reinitialiser</button>
+                    </div>
+                </div>
+
+                <div class="products-stack">
+                    <article class="panel editor-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">EDITION</p>
+                                <h4>Creer ou modifier un produit</h4>
+                            </div>
+                        </div>
+
+                        <form id="productForm" class="stack">
+                            <input id="productId" type="hidden">
+
+                            <div class="form-block">
+                                <h5>Identification</h5>
+                                <label>
+                                    <span>Nom produit</span>
+                                    <input id="productName" type="text" required>
+                                </label>
+                                <label>
+                                    <span>Description</span>
+                                    <textarea id="productDescription" rows="4" required></textarea>
+                                </label>
+                            </div>
+
+                            <div class="form-block">
+                                <h5>Prix et promotion</h5>
+                                <p class="muted form-help">Pour mettre un produit en promo, saisissez un prix actuel plus bas que l'ancien prix. Le pourcentage de remise sera calcule automatiquement.</p>
+                                <div class="form-row">
+                                    <label>
+                                        <span>Prix</span>
+                                        <input id="productPrice" type="number" min="0.01" step="0.01" required>
+                                    </label>
+                                    <label>
+                                        <span>Ancien prix</span>
+                                        <input id="productOldPrice" type="number" min="0.01" step="0.01">
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <label>
+                                        <span>Remise %</span>
+                                        <input id="productDiscountPct" type="number" min="0" max="100" value="0" required>
+                                    </label>
+                                    <label>
+                                        <span>Note / 5</span>
+                                        <input id="productRating" type="number" min="0" max="5" step="0.1" value="0">
+                                    </label>
+                                </div>
+                                <label>
+                                    <span>Label offre home</span>
+                                    <input id="productPromoLabel" type="text" placeholder="Offre du jour, Pack famille...">
+                                </label>
+                                <div class="form-row">
+                                    <label>
+                                        <span>Debut offre</span>
+                                        <input id="productPromoStartsAt" type="datetime-local">
+                                    </label>
+                                    <label>
+                                        <span>Fin offre</span>
+                                        <input id="productPromoEndsAt" type="datetime-local">
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-block">
+                                <h5>Stock et classement</h5>
+                                <div class="form-row">
+                                    <label>
+                                        <span>Stock</span>
+                                        <input id="productStockQty" type="number" min="0" value="0" required>
+                                    </label>
+                                    <label>
+                                        <span>Categorie</span>
+                                        <select id="productCategoryId" required></select>
+                                    </label>
+                                </div>
+                                <div class="form-row">
+                                    <label>
+                                        <span>Nombre de ventes</span>
+                                        <input id="productSalesCount" type="number" min="0" value="0" required>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="form-block">
+                                <h5>Image</h5>
+                                <label>
+                                    <span>Image URL</span>
+                                    <input id="productImageUrl" type="text" placeholder="https://... ou /uploads/...">
+                                </label>
+                                <div class="upload-row">
+                                    <input id="productImageFile" type="file" accept="image/*">
+                                    <button id="uploadProductImageBtn" type="button" class="ghost">Uploader image</button>
+                                </div>
+                                <div id="productImagePreview" class="image-preview muted">Apercu image produit</div>
+                            </div>
+
+                            <div class="flag-panel product-flag-panel">
+                                <div class="flag-panel-head">
+                                    <p class="eyebrow">FILTRES PRODUIT</p>
+                                    <h5>Cette zone concerne seulement le produit</h5>
+                                    <p class="muted">Les cases cochees ici n'heritent pas des filtres de la categorie.</p>
+                                </div>
+                                <label>
+                                    <span>Tags personnalises produit</span>
+                                    <input id="productCustomTags" type="text" placeholder="ex: sans sucre, pack, importe">
+                                    <small>Separe les tags par des virgules. Tu peux ajouter tes propres etiquettes.</small>
+                                </label>
+                                <div class="flag-grid">
+                                    <label class="checkbox">
+                                        <input id="productPromo" type="checkbox">
+                                        <span>Produit en promo</span>
+                                    </label>
+                                    <label class="checkbox">
+                                        <input id="productBio" type="checkbox">
+                                        <span>Produit bio</span>
+                                    </label>
+                                    <label class="checkbox">
+                                        <input id="productNew" type="checkbox">
+                                        <span>Produit nouveau</span>
+                                    </label>
+                                    <label class="checkbox">
+                                        <input id="productPopular" type="checkbox">
+                                        <span>Produit populaire</span>
+                                    </label>
+                                </div>
+                                <label class="checkbox flag-main-toggle">
+                                    <input id="productActive" type="checkbox" checked>
+                                    <span>Produit actif</span>
+                                </label>
+                            </div>
+                            <button type="submit" class="primary">Enregistrer produit</button>
+                        </form>
+                    </article>
+
+                    <article class="panel listing-panel">
+                        <div class="panel-head">
+                            <div>
+                                <p class="eyebrow">LISTE</p>
+                                <h4>Produits disponibles</h4>
+                            </div>
+                        </div>
+                        <div id="productList" class="list-grid"></div>
+                    </article>
+                </div>
+            </section>
+        </main>
+    </section>
+
+    <div id="toast" class="toast hidden"></div>
+</div>
+<script src="app.js?v=20260523-5" defer></script>
+</body>
+</html>

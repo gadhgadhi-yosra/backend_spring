@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:elfaddoui_test;MODE=PostgreSQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  flyway:
+    enabled: false
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    open-in-view: false
+  h2:
+    console:
+      enabled: false
+  mail:
+    host: localhost
+    port: 2525
+
+app:
+  jwt:
+    secret: "CHANGE_ME_TO_A_LONG_RANDOM_SECRET_123456789_CHANGE_ME"
+    expiration-minutes: 120
+  home:
+    defaults:
+      location-label: "Test Location"
+      eta-label: "Test ETA"
+  uploads:
+    directory: "./build/test-uploads"
+    public-base-url: "http://localhost/uploads"
+  mail:
+    enabled: false
+    from: test@elfaddoui.local

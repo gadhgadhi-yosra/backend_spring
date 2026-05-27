@@ -1,0 +1,7 @@
+package com.elfaddoui.backend.upload.service;
+
+import org.springframework.web.multipart.MultipartFile;
+
+public interface ImageStorageService {
+    String store(MultipartFile file);
+}
