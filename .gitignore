@@ -38,3 +38,9 @@ out/
 
 ### Local secrets ###
 .env
+.gradle/
+.gradle-home/
+.gradle-local/
+build/
+uploads/
+*.log
